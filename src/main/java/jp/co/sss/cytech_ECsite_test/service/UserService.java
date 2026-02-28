@@ -1,0 +1,27 @@
+package jp.co.sss.cytech_ECsite_test.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import jp.co.sss.cytech_ECsite_test.entity.User;
+import jp.co.sss.cytech_ECsite_test.repository.UserRepository;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public void register(User user) {
+        user.setPasswords(passwordEncoder.encode(user.getPasswords()));
+        userRepository.save(user);
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+}

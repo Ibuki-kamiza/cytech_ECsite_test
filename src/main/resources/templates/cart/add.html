@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>カート追加 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/cart.css}">
+</head>
+<body>
+
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <form th:action="@{/products}" method="get" style="display:flex; gap:8px;">
+        <input type="text" name="keyword" placeholder="商品名">
+        <select name="categoryId">
+            <option value="">全カテゴリー</option>
+            <option value="1">ファッション</option>
+            <option value="2">電化製品</option>
+            <option value="3">食品</option>
+        </select>
+        <button type="submit">検索</button>
+    </form>
+    <div class="user-info">
+        <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
+        <span sec:authentication="name"></span>
+        <a th:href="@{/logout}">ログアウト</a>
+    </div>
+</header>
+
+<main>
+    <h2>カート追加</h2>
+    <div class="cart-container">
+        <div class="cart-item">
+            <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
+                 onerror="this.src='https://placehold.co/450x300'">
+            <div class="cart-item-info">
+                <p>商品名：<span th:text="${product.productName}"></span></p>
+                <p>個数：<span th:text="${quantity}"></span></p>
+                <p>カート内の合計：<span th:text="'¥' + ${total}"></span></p>
+            </div>
+        </div>
+        <div class="cart-actions">
+            <a th:href="@{/order}" class="btn btn-primary">レジに進む</a>
+            <a th:href="@{/cart}" class="btn btn-secondary">カートに移動</a>
+            <a th:href="@{/top}" class="btn btn-secondary">TOP画面に戻る</a>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>©Cytech EC.com</p>
+</footer>
+
+</body>
+</html>

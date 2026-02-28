@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>カート詳細 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/cart.css}">
+</head>
+<body>
+
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <form th:action="@{/products}" method="get" style="display:flex; gap:8px;">
+        <input type="text" name="keyword" placeholder="商品名">
+        <select name="categoryId">
+            <option value="">全カテゴリー</option>
+            <option value="1">ファッション</option>
+            <option value="2">電化製品</option>
+            <option value="3">食品</option>
+        </select>
+        <button type="submit">検索</button>
+    </form>
+    <div class="user-info">
+        <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
+        <span sec:authentication="name"></span>
+        <a th:href="@{/logout}">ログアウト</a>
+    </div>
+</header>
+
+<main>
+    <h2>カート詳細</h2>
+    <div class="cart-container">
+        <div th:each="cart : ${carts}">
+            <div class="cart-item" th:with="product=${products.stream().filter(p -> p.productId == cart.productId).findFirst().orElse(null)}">
+                <img th:src="@{/images/} + ${product?.imgPath}" alt="商品画像"
+                     onerror="this.src='https://placehold.co/450x300'">
+                <div class="cart-item-info">
+                    <p>商品名：<span th:text="${product?.productName}"></span></p>
+                    <p>数量：
+                        <select class="quantity-select"
+                                th:data-cart-id="${cart.cartId}"
+                                th:data-price="${product?.price}">
+                            <option th:each="i : ${#numbers.sequence(1, 10)}"
+                                    th:value="${i}"
+                                    th:text="${i}"
+                                    th:selected="${i == cart.quantity}">
+                            </option>
+                        </select>
+                    </p>
+                    <p>価格：<span th:text="'¥' + ${product?.price}"></span></p>
+                    <p>消費税込み金額：<span th:text="'¥' + ${product?.taxPrice}"></span></p>
+                    <p>小計：<span th:id="'item-total-' + ${cart.cartId}"
+                                  th:text="'¥' + ${product?.price * cart.quantity}"></span></p>
+                </div>
+                <form th:action="@{/cart/delete}" method="post">
+                    <input type="hidden" name="cartId" th:value="${cart.cartId}">
+                    <button type="submit" class="btn btn-danger">削除</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="cart-summary">
+            <p>合計：<span id="grand-total">¥0</span></p>
+            <p>消費税込み金額：</p>
+        </div>
+
+        <div class="cart-actions">
+            <a th:href="@{/top}" class="btn btn-secondary">TOP画面に戻る</a>
+            <a th:href="@{/order}" class="btn btn-primary">レジに進む</a>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>©Cytech EC.com</p>
+</footer>
+
+<script th:src="@{/js/cart.js}"></script>
+</body>
+</html>

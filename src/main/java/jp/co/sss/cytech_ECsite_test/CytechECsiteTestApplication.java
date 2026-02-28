@@ -1,4 +1,4 @@
-package com.example.demo;
+package jp.co.sss.cytech_ECsite_test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

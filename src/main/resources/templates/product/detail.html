@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>商品詳細 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/product.css}">
+</head>
+<body>
+
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <form th:action="@{/products}" method="get" style="display:flex; gap:8px;">
+        <input type="text" name="keyword" placeholder="商品名">
+        <select name="categoryId">
+            <option value="">全カテゴリー</option>
+            <option value="1">ファッション</option>
+            <option value="2">電化製品</option>
+            <option value="3">食品</option>
+        </select>
+        <button type="submit">検索</button>
+    </form>
+    <div class="user-info">
+        <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
+        <span sec:authentication="name"></span>
+        <a th:href="@{/logout}">ログアウト</a>
+    </div>
+</header>
+
+<main>
+    <div class="product-detail">
+
+        <!-- 商品画像 -->
+        <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
+             onerror="this.src='https://placehold.co/450x300'">
+
+        <!-- 商品情報テーブル -->
+        <table class="info-table">
+            <tr>
+                <th>商品名</th>
+                <td th:text="${product.productName}"></td>
+            </tr>
+            <tr>
+                <th>メーカー</th>
+                <td>-</td>
+            </tr>
+            <tr>
+                <th>価格</th>
+                <td th:text="'¥' + ${product.price}"></td>
+            </tr>
+            <tr>
+                <th>税込価格</th>
+                <td th:text="'¥' + ${product.taxPrice}"></td>
+            </tr>
+            <tr>
+                <th>在庫数</th>
+                <td th:text="${product.stock}"></td>
+            </tr>
+        </table>
+
+        
+        <div class="product-sidebar">
+            <form th:action="@{/cart/add/} + ${product.productId}" method="post">
+                <table class="info-table">
+                    <tr>
+                        <th>数量</th>
+                        <td>
+                            <select name="quantity" id="quantity">
+                                <option th:each="i : ${#numbers.sequence(1, 10)}"
+                                        th:value="${i}" th:text="${i}"></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>価格</th>
+                        <td>
+                            <span id="display-price" th:text="'¥' + ${product.price}"></span>
+                            <span id="base-price"
+                                  th:data-price="${product.price}"
+                                  th:data-tax-price="${product.taxPrice}"
+                                  style="display:none;"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>税込価格</th>
+                        <td><span id="display-tax-price" th:text="'¥' + ${product.taxPrice}"></span></td>
+                    </tr>
+                    <tr>
+                        <th>在庫</th>
+                        <td th:text="${product.stock > 0} ? '在庫あり' : '在庫なし'"></td>
+                    </tr>
+                </table>
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:12px;">
+                    カートに入れる
+                </button>
+            </form>
+            <form th:action="@{/order}" method="get" style="margin-top:8px;">
+                <input type="hidden" name="productId" th:value="${product.productId}">
+                <button type="submit" class="btn btn-secondary" style="width:100%;">
+                    単品購入
+                </button>
+            </form>
+        </div>
+    </div>
+
+    
+    <div class="review-section">
+        <h3>口コミ</h3>
+        <a th:href="@{/review/} + ${product.productId}" class="btn btn-primary"
+           style="margin: 12px 0; display:inline-block;">口コミ投稿</a>
+
+        <div th:each="review : ${reviews}" class="review-item">
+            <table class="info-table" style="margin-bottom:8px;">
+                <tr>
+                    <th>ユーザーID</th>
+                    <td th:text="${review.userId}"></td>
+                    <th>投稿日時</th>
+                    <td th:text="${review.createdAt}"></td>
+                </tr>
+                <tr>
+                    <th>評価</th>
+                    <td th:text="${review.rating} + ' / 5'"></td>
+                    <th>コメント</th>
+                    <td th:text="${review.comment}"></td>
+                </tr>
+            </table>
+        </div>
+        <p th:if="${#lists.isEmpty(reviews)}">まだ口コミがありません</p>
+    </div>
+</main>
+
+<footer>
+    <p>©Cytech EC.com</p>
+</footer>
+
+<script th:src="@{/js/product.js}"></script>
+</body>
+</html>

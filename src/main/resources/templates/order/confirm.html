@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>購入確認 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/order.css}">
+</head>
+<body>
+
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <div class="user-info">
+        <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
+        <span sec:authentication="name"></span>
+        <a th:href="@{/logout}">ログアウト</a>
+    </div>
+</header>
+
+<main>
+    <div class="order-container">
+        <h2>購入確認画面</h2>
+        <div class="order-info">
+            <p>名前：<span th:text="${order.name}"></span></p>
+            <p>住所：<span th:text="${order.address}"></span></p>
+            <p>アパート名：<span th:text="${order.apartment}"></span></p>
+            <p>合計金額：<span th:text="'¥' + ${order.totalPrice}"></span></p>
+        </div>
+        <div class="order-actions">
+            <form th:action="@{/order}" method="get">
+                <button type="submit" class="btn btn-danger">編集</button>
+            </form>
+            <form th:action="@{/order/complete}" method="post" th:object="${order}">
+                <input type="hidden" th:field="*{name}">
+                <input type="hidden" th:field="*{address}">
+                <input type="hidden" th:field="*{apartment}">
+                <input type="hidden" th:field="*{cardNumber}">
+                <input type="hidden" th:field="*{cardExpire}">
+                <input type="hidden" th:field="*{totalPrice}">
+                <button type="submit" class="btn btn-primary">購入</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>©Cytech EC.com</p>
+</footer>
+
+</body>
+</html>

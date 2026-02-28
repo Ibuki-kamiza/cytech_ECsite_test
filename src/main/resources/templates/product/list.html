@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>商品一覧 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/product.css}">
+</head>
+<body>
+
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <form th:action="@{/products}" method="get" style="display:flex; gap:8px;">
+        <input type="text" name="keyword" placeholder="商品名">
+        <select name="categoryId">
+            <option value="">全カテゴリー</option>
+            <option value="1">ファッション</option>
+            <option value="2">電化製品</option>
+            <option value="3">食品</option>
+        </select>
+        <button type="submit">検索</button>
+    </form>
+    <div class="user-info">
+        <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
+        <span sec:authentication="name"></span>
+        <a th:href="@{/logout}">ログアウト</a>
+    </div>
+</header>
+
+<main>
+    <h2 style="margin-bottom: 20px;">商品一覧</h2>
+    <div class="product-grid">
+        <div class="product-card" th:each="product : ${products}"
+             th:onclick="|location.href='@{/products/}' + ${product.productId}|">
+            <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
+                 onerror="this.src='https://placehold.co/450x300'">
+            <div class="product-card-body">
+                <p th:text="${product.productName}">商品名</p>
+                <p th:text="'メーカー'">メーカー名</p>
+                <p th:text="'¥' + ${product.price}">価格</p>
+                <p th:text="'¥' + ${product.taxPrice} + '（税込）'">税込価格</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>©Cytech EC.com</p>
+</footer>
+
+</body>
+</html>

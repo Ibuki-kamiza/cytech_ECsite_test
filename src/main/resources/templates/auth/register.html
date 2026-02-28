@@ -1,0 +1,34 @@
+<<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新規登録 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<div class="auth-wrapper">
+    <div class="form-box">
+        <h2>新規登録</h2>
+        <form th:action="@{/register}" method="post" th:object="${user}">
+            <label>名前</label>
+            <input type="text" th:field="*{userName}" placeholder="名前">
+            <label>名前（かな）</label>
+            <input type="text" th:field="*{userNameKana}" placeholder="名前（かな）">
+            <label>メールアドレス</label>
+            <input type="email" th:field="*{email}" placeholder="メールアドレス">
+            <label>電話番号</label>
+            <input type="text" th:field="*{phone}" placeholder="電話番号">
+            <label>住所</label>
+            <input type="text" th:field="*{userAddress}" placeholder="住所">
+            <label>パスワード</label>
+            <input type="password" th:field="*{passwords}" placeholder="パスワード">
+            <button type="submit">登録</button>
+        </form>
+        <div class="register-link">
+            <a th:href="@{/login}">ログインはこちら</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

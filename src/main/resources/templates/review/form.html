@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>口コミ投稿 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <div class="user-info">
+        <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
+        <span sec:authentication="name"></span>
+        <a th:href="@{/logout}">ログアウト</a>
+    </div>
+</header>
+
+<main>
+    <div class="form-box" style="margin: 20px auto;">
+        <h2>口コミ投稿画面</h2>
+        <form th:action="@{/review/} + ${productId}" method="post" th:object="${review}">
+            <label>評価（1〜5）</label>
+            <select th:field="*{rating}" style="width:100%; padding:8px; margin-bottom:16px;">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <label>コメント</label>
+            <textarea th:field="*{comment}"
+                      style="width:100%; padding:8px; height:120px; margin-bottom:16px; border:1px solid #ccc; border-radius:4px;"></textarea>
+            <button type="submit" class="btn btn-primary" style="width:100%;">投稿</button>
+        </form>
+    </div>
+</main>
+
+<footer>
+    <p>©Cytech EC.com</p>
+</footer>
+
+</body>
+</html>

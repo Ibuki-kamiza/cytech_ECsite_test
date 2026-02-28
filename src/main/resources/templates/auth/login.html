@@ -1,0 +1,27 @@
+<<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ログイン - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<div class="auth-wrapper">
+    <div class="form-box">
+        <h2>ログイン</h2>
+        <p class="error" th:if="${param.error}">メールアドレスまたはパスワードが違います</p>
+        <form th:action="@{/login}" method="post">
+            <label>メールアドレス</label>
+            <input type="email" name="username" placeholder="メールアドレス">
+            <label>パスワード</label>
+            <input type="password" name="password" placeholder="パスワード">
+            <button type="submit">ログイン</button>
+        </form>
+        <div class="register-link">
+            <a th:href="@{/register}">新規登録はこちら</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
