@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>お知らせ編集 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <div class="user-info">
+        <a th:href="@{/top}">サイトTOP</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="logout-btn">ログアウト</button>
+        </form>
+    </div>
+</header>
+<div class="admin-layout">
+    <nav class="admin-nav">
+        <h3>管理メニュー</h3>
+        <a th:href="@{/admin}">ダッシュボード</a>
+        <a th:href="@{/admin/announcements}" class="active">お知らせ管理</a>
+        <a th:href="@{/admin/contacts}">お問い合わせ</a>
+    </nav>
+    <main class="admin-main">
+        <h2 th:text="${announcement.id != null} ? 'お知らせ編集' : 'お知らせ新規作成'"></h2>
+        <form th:action="@{/admin/announcements/save}" method="post"
+              enctype="multipart/form-data" class="admin-form">
+            <input type="hidden" name="id" th:value="${announcement.id}">
+
+            
+            <div class="form-group">
+                <label>種別</label>
+                <select name="type">
+                    <option value="news" th:selected="${announcement.type == 'news'}">NEWS（お知らせ）</option>
+                    <option value="sale" th:selected="${announcement.type == 'sale'}">SALE（セール）</option>
+                </select>
+            </div>
+
+            
+            <div class="form-group">
+                <label>タイトル</label>
+                <input type="text" name="title" th:value="${announcement.title}" required>
+            </div>
+
+            
+            <div class="form-group">
+                <label>内容</label>
+                <textarea name="content" rows="4" required th:text="${announcement.content}"></textarea>
+            </div>
+
+            
+            <div class="form-group">
+                <label>画像（任意）</label>
+                <div th:if="${announcement.imgPath != null}" style="margin-bottom:8px;">
+                    <img th:src="@{/images/} + ${announcement.imgPath}"
+                         style="max-width:200px; border-radius:4px;">
+                </div>
+                <input type="file" name="imgFile" accept="image/*">
+            </div>
+
+            
+            <div class="form-group">
+                <label>関連商品（任意）</label>
+                <select name="productId">
+                    <option value="">選択なし</option>
+                    <option th:each="p : ${products}"
+                            th:value="${p.productId}"
+                            th:text="${p.productName}"
+                            th:selected="${announcement.productId == p.productId}">
+                    </option>
+                </select>
+            </div>
+
+            
+            <div class="form-group checkbox-group">
+                <label>
+                    <input type="checkbox" name="isActive" value="1"
+                           th:checked="${announcement.isActive == null or announcement.isActive == 1}">
+                    公開する
+                </label>
+            </div>
+
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="useSchedule" id="useSchedule"
+                           th:checked="${announcement.startDate != null or announcement.endDate != null}">
+                    表示期間を設定する
+                </label>
+                <div id="schedule-area" style="margin-top:12px; padding:16px; background:#f8f8f8; border-radius:4px;"
+                     th:style="${announcement.startDate != null or announcement.endDate != null} ? 'display:block; margin-top:12px; padding:16px; background:#f8f8f8; border-radius:4px;' : 'display:none; margin-top:12px; padding:16px; background:#f8f8f8; border-radius:4px;'">
+                    <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+                        <div>
+                            <label style="font-size:13px; color:#666;">開始日時</label>
+                            <input type="datetime-local" name="startDate"
+                                   th:value="${announcement.startDate != null} ? ${#temporals.format(announcement.startDate, 'yyyy-MM-dd''T''HH:mm')} : ''">
+                        </div>
+                        <span style="color:#999;">〜</span>
+                        <div>
+                            <label style="font-size:13px; color:#666;">終了日時</label>
+                            <input type="datetime-local" name="endDate"
+                                   th:value="${announcement.endDate != null} ? ${#temporals.format(announcement.endDate, 'yyyy-MM-dd''T''HH:mm')} : ''">
+                        </div>
+                    </div>
+                    <p style="font-size:12px; color:#999; margin-top:8px;">※終了日時を過ぎると自動的にTOPから非表示になります。管理画面には残ります。</p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/admin/announcements}" class="btn btn-secondary">キャンセル</a>
+                <button type="submit" class="btn btn-primary">保存する</button>
+            </div>
+        </form>
+    </main>
+</div>
+<footer><p>©Cytech EC.com</p></footer>
+<script>
+document.getElementById('useSchedule').addEventListener('change', function() {
+    document.getElementById('schedule-area').style.display = this.checked ? 'block' : 'none';
+});
+</script>
+</body>
+</html>

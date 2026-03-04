@@ -6,48 +6,71 @@
     <title>商品一覧 - Cytech EC</title>
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/product.css}">
+    <link rel="stylesheet" th:href="@{/css/top.css}">
 </head>
 <body>
 
 <header>
     <a class="logo" th:href="@{/top}">Cytech EC.</a>
-    <form th:action="@{/products}" method="get" style="display:flex; gap:8px;">
-        <input type="text" name="keyword" placeholder="商品名">
+    <form th:action="@{/search}" method="get">
+        <input type="text" name="keyword" placeholder="商品名・会社名・カテゴリーで検索"
+               th:value="${keyword}">
         <select name="categoryId">
             <option value="">全カテゴリー</option>
-            <option value="1">ファッション</option>
-            <option value="2">電化製品</option>
-            <option value="3">食品</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryId}"
+                    th:text="${category.categoryName}"
+                    th:selected="${category.categoryId == selectedCategoryId}">
+            </option>
         </select>
         <button type="submit">検索</button>
     </form>
     <div class="user-info">
         <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
         <span sec:authentication="name"></span>
-        <a th:href="@{/logout}">ログアウト</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="logout-btn">ログアウト</button>
+        </form>
     </div>
 </header>
 
 <main>
-    <h2 style="margin-bottom: 20px;">商品一覧</h2>
+    
+    <div class="search-header" th:if="${keyword != null and !keyword.isEmpty()}">
+        <h2>「<span th:text="${keyword}"></span>」の検索結果
+            <span class="search-count" th:text="'(' + ${#lists.size(products)} + '件)'"></span>
+        </h2>
+        <a th:href="@{/top}" class="btn btn-secondary btn-sm">検索をクリア</a>
+    </div>
+    <h2 th:unless="${keyword != null and !keyword.isEmpty()}">商品一覧</h2>
+
+    <div th:if="${#lists.isEmpty(products)}" class="search-empty">
+        <p>該当する商品が見つかりませんでした</p>
+        <a th:href="@{/top}" class="btn btn-primary">TOPに戻る</a>
+    </div>
+
     <div class="product-grid">
         <div class="product-card" th:each="product : ${products}"
              th:onclick="|location.href='@{/products/}' + ${product.productId}|">
             <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
                  onerror="this.src='https://placehold.co/450x300'">
             <div class="product-card-body">
-                <p th:text="${product.productName}">商品名</p>
-                <p th:text="'メーカー'">メーカー名</p>
-                <p th:text="'¥' + ${product.price}">価格</p>
-                <p th:text="'¥' + ${product.taxPrice} + '（税込）'">税込価格</p>
+                <p class="product-name" th:text="${product.productName}"></p>
+                <p class="product-price" th:text="'¥' + ${product.price}"></p>
+                <p class="product-tax" th:text="'税込 ¥' + ${product.taxPrice}"></p>
+                <div class="star-row">
+                    <span th:with="avg=${avgRatings[product.productId]}">
+                        <span th:each="i : ${#numbers.sequence(1, 5)}"
+                              th:text="${avg != null and i <= avg} ? '★' : '☆'"
+                              class="star"></span>
+                        <span th:text="${avg != null} ? ${avg} + ' (' + ${reviewCounts[product.productId]} + '件)' : 'レビューなし'"
+                              class="review-count"></span>
+                    </span>
+                </div>
             </div>
         </div>
     </div>
-</main>
 
-<footer>
-    <p>©Cytech EC.com</p>
-</footer>
-
-</body>
-</html>
+    
+    <div id="recently-viewed-section" style="display:none; margin-top:48px;">
+        <h3 style="margin-bottom:16px;">最近見た商品</h3>

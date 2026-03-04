@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>送信完了 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/contact.css}">
+</head>
+<body>
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <div class="user-info">
+        <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
+        <span sec:authentication="name"></span>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="logout-btn">ログアウト</button>
+        </form>
+    </div>
+</header>
+<main>
+    <div class="contact-container">
+        <div class="complete-message">
+            <h2>送信完了</h2>
+            <p>お問い合わせありがとうございました。</p>
+            <p>内容を確認次第、ご連絡いたします。</p>
+            <a th:href="@{/top}" class="btn btn-primary" style="margin-top:24px; display:inline-block;">TOPに戻る</a>
+        </div>
+    </div>
+</main>
+<footer><p>©Cytech EC.com</p></footer>
+</body>
+</html>

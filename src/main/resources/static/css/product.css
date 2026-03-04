@@ -103,7 +103,7 @@
     width: 120px;
     border: 1px solid #ddd;
     font-weight: bold;
-    white-space: nowrap;
+    
 }
 
 .info-table td {
@@ -115,4 +115,61 @@
     padding: 4px 8px;
     border-radius: 4px;
     border: 1px solid #ccc;
+}
+
+
+
+
+.star-row {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.star {
+    color: #f5a623;
+    font-size: 1.1rem;
+}
+
+.star-lg {
+    color: #f5a623;
+    font-size: 1.2rem;
+}
+
+.review-count {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.company-link {
+    color: #1a73e8;
+    text-decoration: none;
+}
+.company-link:hover {
+    text-decoration: underline;
+}
+
+
+.product-sidebar .info-table td {
+    white-space: nowrap;
+}
+
+.search-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.search-count {
+    font-size: 16px;
+    color: #888;
+    font-weight: normal;
+}
+
+.search-empty {
+    text-align: center;
+    padding: 60px 0;
+    color: #666;
 }

@@ -11,25 +11,26 @@
 
 <header>
     <a class="logo" th:href="@{/top}">Cytech EC.</a>
-    <form th:action="@{/products}" method="get" style="display:flex; gap:8px;">
+    <form th:action="@{/products}" method="get">
         <input type="text" name="keyword" placeholder="商品名">
         <select name="categoryId">
             <option value="">全カテゴリー</option>
-            <option value="1">ファッション</option>
-            <option value="2">電化製品</option>
-            <option value="3">食品</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryId}"
+                    th:text="${category.categoryName}">
+            </option>
         </select>
         <button type="submit">検索</button>
     </form>
     <div class="user-info">
         <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
         <span sec:authentication="name"></span>
-        <a th:href="@{/logout}">ログアウト</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;"><button type="submit" class="logout-btn">ログアウト</button></form>
     </div>
 </header>
 
 <main>
-    <h2>カート追加</h2>
+    <h2>カートに追加しました</h2>
     <div class="cart-container">
         <div class="cart-item">
             <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
@@ -37,7 +38,9 @@
             <div class="cart-item-info">
                 <p>商品名：<span th:text="${product.productName}"></span></p>
                 <p>個数：<span th:text="${quantity}"></span></p>
-                <p>カート内の合計：<span th:text="'¥' + ${total}"></span></p>
+                <p>カート内の合計（税抜）：<span th:text="'¥' + ${total}"></span></p>
+                <p>カート内の合計（税込）：<span th:text="'¥' + ${totalTax}"></span></p>
+                <p>カート内の商品数：<span th:text="${cartCount}"></span>点</p>
             </div>
         </div>
         <div class="cart-actions">

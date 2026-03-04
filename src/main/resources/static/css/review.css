@@ -1,0 +1,121 @@
+@charset "UTF-8";
+
+.review-form-container {
+    max-width: 600px;
+    margin: 20px auto;
+    background: white;
+    padding: 32px;
+    border-radius: 8px;
+}
+
+.review-product-name {
+    color: #666;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    font-size: 14px;
+}
+
+.form-group input[type="file"] {
+    display: block;
+    margin-top: 4px;
+}
+
+
+.star-input {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.star-input input[type="radio"] {
+    display: none;
+}
+
+.star-input label {
+    font-size: 32px;
+    color: #ccc;
+    cursor: pointer;
+    margin: 0;
+}
+
+.star-input input[type="radio"]:checked ~ label,
+.star-input label:hover,
+.star-input label:hover ~ label {
+    color: #f5a623;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+
+.review-section {
+    margin-top: 40px;
+    max-width: 900px;
+}
+
+.review-post-btn {
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+.review-item {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #666;
+}
+
+.review-user {
+    font-weight: bold;
+    color: #333;
+}
+
+.review-body {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.review-img {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.review-comment {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.6;
+}

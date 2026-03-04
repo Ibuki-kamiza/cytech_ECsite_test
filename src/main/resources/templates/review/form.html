@@ -5,35 +5,66 @@
     <meta charset="UTF-8">
     <title>口コミ投稿 - Cytech EC</title>
     <link rel="stylesheet" th:href="@{/css/common.css}">
-    <link rel="stylesheet" th:href="@{/css/auth.css}">
+    <link rel="stylesheet" th:href="@{/css/review.css}">
 </head>
 <body>
 
 <header>
     <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <form th:action="@{/products}" method="get">
+        <input type="text" name="keyword" placeholder="商品名">
+        <select name="categoryId">
+            <option value="">全カテゴリー</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryId}"
+                    th:text="${category.categoryName}">
+            </option>
+        </select>
+        <button type="submit">検索</button>
+    </form>
     <div class="user-info">
         <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
         <span sec:authentication="name"></span>
-        <a th:href="@{/logout}">ログアウト</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;"><button type="submit" class="logout-btn">ログアウト</button></form>
     </div>
 </header>
 
 <main>
-    <div class="form-box" style="margin: 20px auto;">
-        <h2>口コミ投稿画面</h2>
-        <form th:action="@{/review/} + ${productId}" method="post" th:object="${review}">
-            <label>評価（1〜5）</label>
-            <select th:field="*{rating}" style="width:100%; padding:8px; margin-bottom:16px;">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
-            <label>コメント</label>
-            <textarea th:field="*{comment}"
-                      style="width:100%; padding:8px; height:120px; margin-bottom:16px; border:1px solid #ccc; border-radius:4px;"></textarea>
-            <button type="submit" class="btn btn-primary" style="width:100%;">投稿</button>
+    <div class="review-form-container">
+        <h2>口コミ投稿</h2>
+        <p class="review-product-name" th:text="${product.productName}"></p>
+
+        <form th:action="@{/review/} + ${product.productId}" method="post"
+              enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label>評価</label>
+                <div class="star-input">
+                    <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+                    <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                    <input type="radio" id="star3" name="rating" value="3" checked><label for="star3">★</label>
+                    <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                    <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="comment">コメント</label>
+                <textarea id="comment" name="comment" rows="5" placeholder="商品の感想を入力してください" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="imgFile">写真（任意）</label>
+                <input type="file" id="imgFile" name="imgFile" accept="image/*">
+                <div id="preview-wrapper" style="display:none; margin-top:8px;">
+                    <img id="img-preview" style="max-width:200px; border-radius:4px;">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/products/} + ${product.productId}" class="btn btn-secondary">戻る</a>
+                <button type="submit" class="btn btn-primary">投稿する</button>
+            </div>
         </form>
     </div>
 </main>
@@ -42,5 +73,18 @@
     <p>©Cytech EC.com</p>
 </footer>
 
+<script>
+document.getElementById('imgFile').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            document.getElementById('img-preview').src = ev.target.result;
+            document.getElementById('preview-wrapper').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
 </body>
 </html>

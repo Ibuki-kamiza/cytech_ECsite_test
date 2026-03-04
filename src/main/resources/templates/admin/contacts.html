@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>お問い合わせ管理 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <div class="user-info">
+        <a th:href="@{/top}">サイトTOP</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="logout-btn">ログアウト</button>
+        </form>
+    </div>
+</header>
+<div class="admin-layout">
+    <nav class="admin-nav">
+        <h3>管理メニュー</h3>
+        <a th:href="@{/admin}">ダッシュボード</a>
+        <a th:href="@{/admin/announcements}">お知らせ管理</a>
+        <a th:href="@{/admin/contacts}" class="active">お問い合わせ</a>
+    </nav>
+    <main class="admin-main">
+        <h2>お問い合わせ一覧</h2>
+        <p th:if="${#lists.isEmpty(contacts)}">お問い合わせはありません</p>
+        <table class="admin-table" th:unless="${#lists.isEmpty(contacts)}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名前</th>
+                    <th>メール</th>
+                    <th>内容</th>
+                    <th>日時</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="c : ${contacts}">
+                    <td th:text="${c.id}"></td>
+                    <td th:text="${c.name}"></td>
+                    <td th:text="${c.email}"></td>
+                    <td th:text="${#strings.abbreviate(c.message, 60)}"></td>
+                    <td th:text="${#temporals.format(c.createdAt, 'yyyy/MM/dd HH:mm')}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+<footer><p>©Cytech EC.com</p></footer>
+</body>
+</html>

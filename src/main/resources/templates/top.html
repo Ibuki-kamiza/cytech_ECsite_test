@@ -6,47 +6,108 @@
     <title>TOP - Cytech EC</title>
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/product.css}">
+    <link rel="stylesheet" th:href="@{/css/top.css}">
 </head>
 <body>
 
 <header>
     <a class="logo" th:href="@{/top}">Cytech EC.</a>
-    <form th:action="@{/products}" method="get" style="display:flex; gap:8px;">
-        <input type="text" name="keyword" placeholder="商品名">
+    <form th:action="@{/search}" method="get">
+        <input type="text" name="keyword" placeholder="商品名・会社名・カテゴリーで検索">
         <select name="categoryId">
             <option value="">全カテゴリー</option>
-            <option value="1">ファッション</option>
-            <option value="2">電化製品</option>
-            <option value="3">食品</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryId}"
+                    th:text="${category.categoryName}">
+            </option>
         </select>
         <button type="submit">検索</button>
     </form>
     <div class="user-info">
         <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
+        <a th:href="@{/admin}" sec:authorize="hasRole('ADMIN')" style="margin-right:8px; font-size:13px;">管理画面</a>
         <span sec:authentication="name"></span>
-        <a th:href="@{/logout}">ログアウト</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="logout-btn">ログアウト</button>
+        </form>
     </div>
 </header>
 
 <main>
-    <h2 style="margin-bottom: 20px;">商品一覧</h2>
-    <div class="product-grid">
-        <div class="product-card" th:each="product : ${products}"
-             th:onclick="|location.href='@{/products/}' + ${product.productId}|">
-            <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
-                 onerror="this.src='https://placehold.co/450x300'">
-            <div class="product-card-body">
-                <p th:text="${product.productName}">商品名</p>
-                <p th:text="${product.price} + '円'">価格</p>
-                <p th:text="${product.taxPrice} + '円（税込）'">税込価格</p>
+    
+    <a th:if="${!#lists.isEmpty(sales)}" th:href="@{/sales}" style="text-decoration:none;">
+        <div class="sale-banner">
+            <div th:each="sale : ${sales}" class="sale-item">
+                <span class="sale-badge">SALE</span>
+                <span class="sale-title" th:text="${sale.title}"></span>
+                <span class="sale-content" th:text="${sale.content}"></span>
             </div>
         </div>
+    </a>
+
+    
+    <div class="top-layout">
+
+        
+        <aside class="news-sidebar">
+            <h3>お知らせ</h3>
+            <div th:if="${#lists.isEmpty(news)}" class="news-empty">お知らせはありません</div>
+            <div th:each="item : ${news}" class="news-item">
+                <span class="news-date" th:text="${#temporals.format(item.createdAt, 'yyyy/MM/dd')}"></span>
+                <a th:href="@{/announcements/} + ${item.id}" class="news-title-link"><p class="news-title" th:text="${item.title}"></p></a>
+                <p class="news-content" th:text="${item.content}"></p>
+                <div th:if="${item.imgPath != null}" style="margin-top:6px;">
+                    <img th:src="@{/images/} + ${item.imgPath}"
+                         style="width:100%; border-radius:4px;" alt="お知らせ画像">
+                </div>
+            </div>
+            <div class="news-contact">
+                <a th:href="@{/contact}" class="btn btn-secondary btn-sm">お問い合わせ</a>
+            </div>
+        </aside>
+
+        
+        <div class="top-right">
+            <section class="top-products">
+                <h2>商品一覧</h2>
+                <div class="product-grid">
+                    <div class="product-card" th:each="product : ${products}"
+                         th:onclick="|location.href='@{/products/}' + ${product.productId}|">
+                        <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
+                             onerror="this.src='https://placehold.co/300x200'">
+                        <div class="product-card-body">
+                            <p class="product-name" th:text="${product.productName}"></p>
+                            <p class="product-price" th:text="'¥' + ${product.price}"></p>
+                            <p class="product-tax" th:text="'税込 ¥' + ${product.taxPrice}"></p>
+                            <div class="star-row">
+                                <span th:each="i : ${#numbers.sequence(1, 5)}"
+                                      th:text="${avgRatings[product.productId] != null and i <= avgRatings[product.productId]} ? '★' : '☆'"
+                                      class="star"></span>
+                                <span th:text="${reviewCounts[product.productId] != null} ? '(' + ${reviewCounts[product.productId]} + '件)' : ''"
+                                      class="review-count"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <div id="recently-viewed-section" style="display:none; margin-top:48px;">
+                <h3 style="margin-bottom:16px;">最近見た商品</h3>
+                <div id="recently-viewed-grid" class="product-grid"></div>
+            </div>
+        </div>
+
     </div>
 </main>
 
 <footer>
+    <div class="footer-links">
+        <a th:href="@{/contact}">お問い合わせ</a>
+    </div>
     <p>©Cytech EC.com</p>
 </footer>
 
+<script th:src="@{/js/recently-viewed.js}"></script>
 </body>
 </html>

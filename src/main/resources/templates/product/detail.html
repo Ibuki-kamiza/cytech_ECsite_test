@@ -6,44 +6,48 @@
     <title>商品詳細 - Cytech EC</title>
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/product.css}">
+    <link rel="stylesheet" th:href="@{/css/review.css}">
 </head>
 <body>
 
 <header>
     <a class="logo" th:href="@{/top}">Cytech EC.</a>
-    <form th:action="@{/products}" method="get" style="display:flex; gap:8px;">
+    <form th:action="@{/products}" method="get">
         <input type="text" name="keyword" placeholder="商品名">
         <select name="categoryId">
             <option value="">全カテゴリー</option>
-            <option value="1">ファッション</option>
-            <option value="2">電化製品</option>
-            <option value="3">食品</option>
+            <option th:each="cat : ${categories}"
+                    th:value="${cat.categoryId}"
+                    th:text="${cat.categoryName}">
+            </option>
         </select>
         <button type="submit">検索</button>
     </form>
     <div class="user-info">
         <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
         <span sec:authentication="name"></span>
-        <a th:href="@{/logout}">ログアウト</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;"><button type="submit" class="logout-btn">ログアウト</button></form>
     </div>
 </header>
 
 <main>
     <div class="product-detail">
 
-        <!-- 商品画像 -->
         <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
              onerror="this.src='https://placehold.co/450x300'">
 
-        <!-- 商品情報テーブル -->
         <table class="info-table">
             <tr>
                 <th>商品名</th>
                 <td th:text="${product.productName}"></td>
             </tr>
             <tr>
+                <th>カテゴリー</th>
+                <td th:text="${category != null} ? ${category.categoryName} : '-'"></td>
+            </tr>
+            <tr>
                 <th>メーカー</th>
-                <td>-</td>
+                <td><a th:if="${company != null}" th:href="@{/companies/} + ${company.companyId}" th:text="${company.companyName}" class="company-link"></a><span th:unless="${company != null}">-</span></td>
             </tr>
             <tr>
                 <th>価格</th>
@@ -57,9 +61,20 @@
                 <th>在庫数</th>
                 <td th:text="${product.stock}"></td>
             </tr>
+            <tr>
+                <th>評価</th>
+                <td>
+                    <div class="star-row">
+                        <span th:each="i : ${#numbers.sequence(1, 5)}"
+                              th:text="${avgRating != null and i <= avgRating} ? '★' : '☆'"
+                              class="star-lg"></span>
+                        <span th:text="${avgRating != null} ? ${avgRating} + ' (' + ${reviewCount} + '件)' : 'レビューなし'"
+                              class="review-count"></span>
+                    </div>
+                </td>
+            </tr>
         </table>
 
-        
         <div class="product-sidebar">
             <form th:action="@{/cart/add/} + ${product.productId}" method="post">
                 <table class="info-table">
@@ -91,40 +106,36 @@
                         <td th:text="${product.stock > 0} ? '在庫あり' : '在庫なし'"></td>
                     </tr>
                 </table>
-                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:12px;">
-                    カートに入れる
-                </button>
+                <button type="submit" class="btn btn-primary btn-full">カートに入れる</button>
             </form>
-            <form th:action="@{/order}" method="get" style="margin-top:8px;">
+            <form th:action="@{/order}" method="get" class="mt-8">
                 <input type="hidden" name="productId" th:value="${product.productId}">
-                <button type="submit" class="btn btn-secondary" style="width:100%;">
-                    単品購入
-                </button>
+                <button type="submit" class="btn btn-secondary btn-full">単品購入</button>
             </form>
         </div>
     </div>
 
-    
     <div class="review-section">
         <h3>口コミ</h3>
-        <a th:href="@{/review/} + ${product.productId}" class="btn btn-primary"
-           style="margin: 12px 0; display:inline-block;">口コミ投稿</a>
+        <a th:href="@{/review/} + ${product.productId}" class="btn btn-primary review-post-btn">口コミ投稿</a>
 
         <div th:each="review : ${reviews}" class="review-item">
-            <table class="info-table" style="margin-bottom:8px;">
-                <tr>
-                    <th>ユーザーID</th>
-                    <td th:text="${review.userId}"></td>
-                    <th>投稿日時</th>
-                    <td th:text="${review.createdAt}"></td>
-                </tr>
-                <tr>
-                    <th>評価</th>
-                    <td th:text="${review.rating} + ' / 5'"></td>
-                    <th>コメント</th>
-                    <td th:text="${review.comment}"></td>
-                </tr>
-            </table>
+            <div class="review-header">
+                <span class="review-user" th:text="${reviewUserNames[review.reviewId] ?: '不明'}"></span>
+                <span th:text="${#temporals.format(review.createdAt, 'yyyy/MM/dd HH:mm')}"></span>
+            </div>
+            <div class="star-row" style="margin-bottom:8px;">
+                <span th:each="i : ${#numbers.sequence(1, 5)}"
+                      th:text="${i <= review.rating} ? '★' : '☆'"
+                      class="star"></span>
+                <span th:text="${review.rating} + ' / 5'" class="review-count"></span>
+            </div>
+            <div class="review-body">
+                <img th:if="${review.imgPath != null}"
+                     th:src="@{/images/} + ${review.imgPath}"
+                     class="review-img" alt="レビュー画像">
+                <p class="review-comment" th:text="${review.comment}"></p>
+            </div>
         </div>
         <p th:if="${#lists.isEmpty(reviews)}">まだ口コミがありません</p>
     </div>
@@ -135,5 +146,6 @@
 </footer>
 
 <script th:src="@{/js/product.js}"></script>
+<script th:src="@{/js/recently-viewed.js}"></script>
 </body>
 </html>

@@ -21,4 +21,13 @@ public class ReviewService {
     public void save(Review review) {
         reviewRepository.save(review);
     }
+
+    public Double getAverageRating(Integer productId) {
+        Double avg = reviewRepository.findAverageRatingByProductId(productId);
+        return avg != null ? Math.round(avg * 10.0) / 10.0 : null;
+    }
+
+    public Integer getReviewCount(Integer productId) {
+        return reviewRepository.countByProductId(productId);
+    }
 }

@@ -19,6 +19,7 @@ public class Review {
     private Integer userId;
     private String comment;
     private Integer rating;
+    private String imgPath;
     private LocalDateTime createdAt;
 
     public Integer getReviewId() { return reviewId; }
@@ -31,6 +32,8 @@ public class Review {
     public void setComment(String comment) { this.comment = comment; }
     public Integer getRating() { return rating; }
     public void setRating(Integer rating) { this.rating = rating; }
+    public String getImgPath() { return imgPath; }
+    public void setImgPath(String imgPath) { this.imgPath = imgPath; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

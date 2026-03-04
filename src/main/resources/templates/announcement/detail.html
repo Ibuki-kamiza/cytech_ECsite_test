@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${announcement.title} + ' - Cytech EC'"></title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/announcement.css}">
+</head>
+<body>
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <form th:action="@{/search}" method="get">
+        <input type="text" name="keyword" placeholder="商品名・会社名・カテゴリーで検索">
+        <select name="categoryId">
+            <option value="">全カテゴリー</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryId}"
+                    th:text="${category.categoryName}">
+            </option>
+        </select>
+        <button type="submit">検索</button>
+    </form>
+    <div class="user-info">
+        <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
+        <span sec:authentication="name"></span>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="logout-btn">ログアウト</button>
+        </form>
+    </div>
+</header>
+
+<main>
+    <div class="announcement-container">
+        <div class="announcement-back">
+            <a th:href="@{/top}">← TOPに戻る</a>
+        </div>
+
+        <div class="announcement-card">
+            
+            <div class="announcement-badge-row">
+                <span th:if="${announcement.type == 'sale'}" class="badge badge-sale">SALE</span>
+                <span th:if="${announcement.type == 'news'}" class="badge badge-news">NEWS</span>
+                <span class="announcement-date"
+                      th:text="${#temporals.format(announcement.createdAt, 'yyyy/MM/dd')}"></span>
+            </div>
+
+            
+            <h2 th:text="${announcement.title}"></h2>
+
+            <img th:if="${announcement.imgPath != null}"
+                 th:src="@{/images/} + ${announcement.imgPath}"
+                 class="announcement-img" alt="お知らせ画像">
+           
+            <p class="announcement-content" th:text="${announcement.content}"></p>
+          
+            <div th:if="${announcement.startDate != null or announcement.endDate != null}"
+                 class="announcement-period">
+                <span th:if="${announcement.startDate != null}">
+                    開始：<span th:text="${#temporals.format(announcement.startDate, 'yyyy/MM/dd HH:mm')}"></span>
+                </span>
+                <span th:if="${announcement.endDate != null}">
+                    　終了：<span th:text="${#temporals.format(announcement.endDate, 'yyyy/MM/dd HH:mm')}"></span>
+                </span>
+            </div>
+
+           
+            <div th:if="${product != null}" class="announcement-product">
+                <h3>関連商品</h3>
+                <a th:href="@{/products/} + ${product.productId}" class="announcement-product-link">
+                    <img th:src="@{/images/} + ${product.imgPath}"
+                         onerror="this.src='https://placehold.co/200x140'"
+                         class="announcement-product-img" alt="商品画像">
+                    <div>
+                        <p class="announcement-product-name" th:text="${product.productName}"></p>
+                        <p class="announcement-product-price" th:text="'¥' + ${product.price}"></p>
+                        <p class="announcement-product-tax" th:text="'税込 ¥' + ${product.taxPrice}"></p>
+                        <span class="btn btn-primary" style="margin-top:8px; display:inline-block;">商品を見る</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-links"><a th:href="@{/contact}">お問い合わせ</a></div>
+    <p>©Cytech EC.com</p>
+</footer>
+</body>
+</html>

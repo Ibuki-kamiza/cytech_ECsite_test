@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>管理画面 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <div class="user-info">
+        <a th:href="@{/top}">サイトTOP</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="logout-btn">ログアウト</button>
+        </form>
+    </div>
+</header>
+<div class="admin-layout">
+    <nav class="admin-nav">
+        <h3>管理メニュー</h3>
+        <a th:href="@{/admin}" class="active">ダッシュボード</a>
+        <a th:href="@{/admin/announcements}">お知らせ管理</a>
+        <a th:href="@{/admin/contacts}">お問い合わせ</a>
+    </nav>
+    <main class="admin-main">
+        <h2>ダッシュボード</h2>
+        <div class="dashboard-cards">
+            <div class="dashboard-card">
+                <p class="card-label">お知らせ件数</p>
+                <p class="card-value" th:text="${announcementCount}"></p>
+                <a th:href="@{/admin/announcements}">管理する →</a>
+            </div>
+            <div class="dashboard-card">
+                <p class="card-label">お問い合わせ件数</p>
+                <p class="card-value" th:text="${contactCount}"></p>
+                <a th:href="@{/admin/contacts}">確認する →</a>
+            </div>
+        </div>
+    </main>
+</div>
+<footer><p>©Cytech EC.com</p></footer>
+</body>
+</html>

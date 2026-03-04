@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>セール情報 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/top.css}">
+    <link rel="stylesheet" th:href="@{/css/sale.css}">
+</head>
+<body>
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <form th:action="@{/search}" method="get">
+        <input type="text" name="keyword" placeholder="商品名・会社名・カテゴリーで検索">
+        <select name="categoryId">
+            <option value="">全カテゴリー</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryId}"
+                    th:text="${category.categoryName}">
+            </option>
+        </select>
+        <button type="submit">検索</button>
+    </form>
+    <div class="user-info">
+        <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
+        <span sec:authentication="name"></span>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="logout-btn">ログアウト</button>
+        </form>
+    </div>
+</header>
+<main>
+    <div class="sale-page-header">
+        <h2>セール情報</h2>
+        <p>現在開催中のセール・キャンペーンをご紹介します</p>
+    </div>
+
+    <div th:if="${#lists.isEmpty(sales)}" class="sale-empty">
+        <p>現在開催中のセールはありません</p>
+        <a th:href="@{/top}" class="btn btn-primary">TOPに戻る</a>
+    </div>
+
+    <div class="sale-list">
+        <div th:each="sale : ${sales}" class="sale-card">
+            <div class="sale-card-badge">SALE</div>
+            <img th:if="${sale.imgPath != null}"
+                 th:src="@{/images/} + ${sale.imgPath}"
+                 class="sale-card-img" alt="セール画像">
+            <div class="sale-card-body">
+                <h3 th:text="${sale.title}"></h3>
+                <p th:text="${sale.content}"></p>
+                <div th:if="${sale.endDate != null}" class="sale-period">
+                    <span>終了：</span>
+                    <span th:text="${#temporals.format(sale.endDate, 'yyyy/MM/dd HH:mm')}"></span>
+                </div>
+                
+				
+                <div th:if="${saleProducts[sale.id] != null}" class="sale-product">
+                    <a th:href="@{/products/} + ${saleProducts[sale.id].productId}" class="sale-product-link">
+                        <img th:src="@{/images/} + ${saleProducts[sale.id].imgPath}"
+                             onerror="this.src='https://placehold.co/200x140'"
+                             class="sale-product-img" alt="商品画像">
+                        <div>
+                            <p class="sale-product-name" th:text="${saleProducts[sale.id].productName}"></p>
+                            <p class="sale-product-price" th:text="'¥' + ${saleProducts[sale.id].price}"></p>
+                            <p class="sale-product-tax" th:text="'税込 ¥' + ${saleProducts[sale.id].taxPrice}"></p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="footer-links"><a th:href="@{/contact}">お問い合わせ</a></div>
+    <p>©Cytech EC.com</p>
+</footer>
+</body>
+</html>

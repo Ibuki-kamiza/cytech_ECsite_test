@@ -14,19 +14,10 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Product> findAll() {
-        return productRepository.findAll();
-    }
-
-    public Product findById(Integer id) {
-        return productRepository.findById(id).orElse(null);
-    }
-
-    public List<Product> searchByName(String keyword) {
-        return productRepository.findByProductNameContaining(keyword);
-    }
-
-    public List<Product> findByCategory(Integer categoryId) {
-        return productRepository.findByCategoryId(categoryId);
-    }
+    public List<Product> findAll() { return productRepository.findAll(); }
+    public Product findById(Integer id) { return productRepository.findById(id).orElse(null); }
+    public List<Product> searchByName(String keyword) { return productRepository.findByProductNameContaining(keyword); }
+    public List<Product> findByCategory(Integer categoryId) { return productRepository.findByCategoryId(categoryId); }
+    public List<Product> findByCompanyId(Integer companyId) { return productRepository.findByCompanyId(companyId); }
+    public List<Product> searchByKeyword(String keyword) { return productRepository.searchByKeyword(keyword); }
 }

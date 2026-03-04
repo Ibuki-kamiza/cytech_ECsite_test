@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${company.companyName} + ' - Cytech EC'"></title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/product.css}">
+    <link rel="stylesheet" th:href="@{/css/review.css}">
+    <link rel="stylesheet" th:href="@{/css/company.css}">
+</head>
+<body>
+
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <form th:action="@{/products}" method="get">
+        <input type="text" name="keyword" placeholder="商品名">
+        <select name="categoryId">
+            <option value="">全カテゴリー</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryId}"
+                    th:text="${category.categoryName}">
+            </option>
+        </select>
+        <button type="submit">検索</button>
+    </form>
+    <div class="user-info">
+        <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
+        <span sec:authentication="name"></span>
+        <form th:action="@{/logout}" method="post" style="display:inline;"><button type="submit" class="logout-btn">ログアウト</button></form>
+    </div>
+</header>
+
+<main>
+    
+    <div class="company-header">
+        <h2 th:text="${company.companyName}"></h2>
+        <div class="star-row">
+            <span th:each="i : ${#numbers.sequence(1, 5)}"
+                  th:text="${avgRating != null and i <= avgRating} ? '★' : '☆'"
+                  class="star-lg"></span>
+            <span th:text="${avgRating != null} ? ${avgRating} + ' (' + ${reviewCount} + '件)' : 'レビューなし'"
+                  class="review-count"></span>
+        </div>
+    </div>
+
+    
+    <section class="company-section">
+        <h3>取扱商品</h3>
+        <div th:if="${#lists.isEmpty(products)}" class="cart-empty">
+            <p>この메ーカーの商品はありません</p>
+        </div>
+        <div class="product-grid">
+            <div th:each="product : ${products}" class="product-card">
+                <a th:href="@{/products/} + ${product.productId}">
+                    <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
+                         onerror="this.src='https://placehold.co/300x200'">
+                    <div class="product-card-body">
+                        <p class="product-name" th:text="${product.productName}"></p>
+                        <p class="product-price" th:text="'¥' + ${product.price}"></p>
+                        <p class="product-tax" th:text="'税込 ¥' + ${product.taxPrice}"></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="company-section">
+        <h3>口コミを投稿する</h3>
+        <form th:action="@{/companies/} + ${company.companyId} + '/review'" method="post"
+              enctype="multipart/form-data" class="company-review-form">
+            <div class="form-group">
+                <label>評価</label>
+                <div class="star-input">
+                    <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+                    <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                    <input type="radio" id="star3" name="rating" value="3" checked><label for="star3">★</label>
+                    <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                    <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="comment">コメント</label>
+                <textarea id="comment" name="comment" rows="4"
+                          placeholder="メーカーへの感想を入力してください" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="imgFile">写真（任意）</label>
+                <input type="file" id="imgFile" name="imgFile" accept="image/*">
+                <div id="preview-wrapper" style="display:none; margin-top:8px;">
+                    <img id="img-preview" style="max-width:200px; border-radius:4px;">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">投稿する</button>
+        </form>
+    </section>
+
+    
+    <section class="company-section">
+        <h3>口コミ一覧</h3>
+        <p th:if="${#lists.isEmpty(reviews)}">まだ口コミがありません</p>
+        <div th:each="review : ${reviews}" class="review-item">
+            <div class="review-header">
+                <span class="review-user" th:text="${reviewUserNames[review.reviewId] ?: '不明'}"></span>
+                <span th:text="${#temporals.format(review.createdAt, 'yyyy/MM/dd HH:mm')}"></span>
+            </div>
+            <div class="star-row" style="margin-bottom:8px;">
+                <span th:each="i : ${#numbers.sequence(1, 5)}"
+                      th:text="${i <= review.rating} ? '★' : '☆'"
+                      class="star"></span>
+                <span th:text="${review.rating} + ' / 5'" class="review-count"></span>
+            </div>
+            <div class="review-body">
+                <img th:if="${review.imgPath != null}"
+                     th:src="@{/images/} + ${review.imgPath}"
+                     class="review-img" alt="レビュー画像">
+                <p class="review-comment" th:text="${review.comment}"></p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>©Cytech EC.com</p>
+</footer>
+
+<script>
+document.getElementById('imgFile').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            document.getElementById('img-preview').src = ev.target.result;
+            document.getElementById('preview-wrapper').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+</body>
+</html>

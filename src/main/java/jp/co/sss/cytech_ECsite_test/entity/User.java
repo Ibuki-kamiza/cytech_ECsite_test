@@ -23,6 +23,7 @@ public class User {
     private String phone;
     private String userAddress;
     private String passwords;
+    private String role;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -51,8 +52,11 @@ public class User {
     public void setUserAddress(String userAddress) { this.userAddress = userAddress; }
     public String getPasswords() { return passwords; }
     public void setPasswords(String passwords) { this.passwords = passwords; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }
+

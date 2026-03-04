@@ -24,7 +24,7 @@
     <div class="user-info">
         <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
         <span sec:authentication="name"></span>
-        <a th:href="@{/logout}">ログアウト</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;"><button type="submit" class="logout-btn">ログアウト</button></form>
     </div>
 </header>
 

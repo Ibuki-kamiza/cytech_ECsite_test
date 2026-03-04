@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>お知らせ管理 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <div class="user-info">
+        <a th:href="@{/top}">サイトTOP</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="logout-btn">ログアウト</button>
+        </form>
+    </div>
+</header>
+<div class="admin-layout">
+    <nav class="admin-nav">
+        <h3>管理メニュー</h3>
+        <a th:href="@{/admin}">ダッシュボード</a>
+        <a th:href="@{/admin/announcements}" class="active">お知らせ管理</a>
+        <a th:href="@{/admin/contacts}">お問い合わせ</a>
+    </nav>
+    <main class="admin-main">
+        <div class="admin-header">
+            <h2>お知らせ管理</h2>
+            <a th:href="@{/admin/announcements/new}" class="btn btn-primary">＋ 新規作成</a>
+        </div>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>種別</th>
+                    <th>タイトル</th>
+                    <th>内容</th>
+                    <th>公開</th>
+                    <th>日時</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="a : ${announcements}">
+                    <td th:text="${a.id}"></td>
+                    <td>
+                        <span th:if="${a.type == 'sale'}" class="badge badge-sale">SALE</span>
+                        <span th:if="${a.type == 'news'}" class="badge badge-news">NEWS</span>
+                    </td>
+                    <td th:text="${a.title}"></td>
+                    <td th:text="${#strings.abbreviate(a.content, 40)}"></td>
+                    <td>
+                        <span th:if="${a.isActive == 1}" class="badge badge-active">公開中</span>
+                        <span th:unless="${a.isActive == 1}" class="badge badge-inactive">非公開</span>
+                    </td>
+                    <td th:text="${#temporals.format(a.createdAt, 'yyyy/MM/dd')}"></td>
+                    <td>
+                        <a th:href="@{/admin/announcements/} + ${a.id} + '/edit'" class="btn btn-sm btn-secondary">編集</a>
+                        <form th:action="@{/admin/announcements/} + ${a.id} + '/delete'" method="post" style="display:inline;"
+                              onsubmit="return confirm('削除しますか？')">
+                            <button type="submit" class="btn btn-sm btn-danger">削除</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+<footer><p>©Cytech EC.com</p></footer>
+</body>
+</html>

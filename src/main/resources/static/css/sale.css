@@ -1,0 +1,131 @@
+@charset "UTF-8";
+
+.sale-page-header {
+    text-align: center;
+    padding: 32px 0 24px;
+}
+
+.sale-page-header h2 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.sale-page-header p {
+    color: #666;
+}
+
+.sale-empty {
+    text-align: center;
+    padding: 60px 0;
+    color: #666;
+}
+
+.sale-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 800px;
+    margin: 0 auto 40px;
+}
+
+.sale-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    position: relative;
+}
+
+.sale-card-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #ee5a24;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+.sale-card-img {
+    width: 100%;
+    max-height: 240px;
+    object-fit: cover;
+}
+
+.sale-card-body {
+    padding: 20px 24px;
+}
+
+.sale-card-body h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.sale-card-body p {
+    color: #555;
+    margin-bottom: 12px;
+}
+
+.sale-period {
+    font-size: 13px;
+    color: #e74c3c;
+    margin-bottom: 16px;
+}
+
+.sale-product {
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+}
+
+.sale-product-link {
+    display: flex;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+    align-items: center;
+}
+
+.sale-product-link:hover {
+    opacity: 0.8;
+}
+
+.sale-product-img {
+    width: 120px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.sale-product-name {
+    font-weight: bold;
+    margin-bottom: 4px !important;
+}
+
+.sale-product-price {
+    color: #333;
+    font-size: 15px;
+    margin-bottom: 2px !important;
+}
+
+.sale-product-tax {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 0 !important;
+}
+
+
+.sale-card {
+    padding-top: 0;
+}
+
+.sale-card-badge {
+    position: static;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.sale-card-body {
+    padding: 20px 24px 24px;
+}

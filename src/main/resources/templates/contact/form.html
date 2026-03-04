@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>お問い合わせ - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/contact.css}">
+</head>
+<body>
+<header>
+    <a class="logo" th:href="@{/top}">Cytech EC.</a>
+    <form th:action="@{/search}" method="get">
+        <input type="text" name="keyword" placeholder="商品名・会社名・カテゴリーで検索">
+        <select name="categoryId">
+            <option value="">全カテゴリー</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryId}"
+                    th:text="${category.categoryName}">
+            </option>
+        </select>
+        <button type="submit">検索</button>
+    </form>
+    <div class="user-info">
+        <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
+        <span sec:authentication="name"></span>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="logout-btn">ログアウト</button>
+        </form>
+    </div>
+</header>
+<main>
+    <div class="contact-container">
+        <h2>お問い合わせ</h2>
+        <form th:action="@{/contact}" method="post">
+            <div class="form-group">
+                <label for="name">お名前</label>
+                <input type="text" id="name" name="name" required placeholder="山田 太郎">
+            </div>
+            <div class="form-group">
+                <label for="email">メールアドレス</label>
+                <input type="email" id="email" name="email" required placeholder="example@email.com">
+            </div>
+            <div class="form-group">
+                <label for="message">お問い合わせ内容</label>
+                <textarea id="message" name="message" rows="6" required placeholder="お問い合わせ内容を入力してください"></textarea>
+            </div>
+            <div class="form-actions">
+                <a th:href="@{/top}" class="btn btn-secondary">戻る</a>
+                <button type="submit" class="btn btn-primary">送信する</button>
+            </div>
+        </form>
+    </div>
+</main>
+<footer><p>©Cytech EC.com</p></footer>
+</body>
+</html>
+
+
