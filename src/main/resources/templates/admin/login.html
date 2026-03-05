@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>管理者ログイン - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/admin-auth.css}">
+</head>
+<body class="admin-auth">
+    <div class="admin-auth-box">
+
+        <div class="admin-auth-logo">
+            <span>Cytech EC.</span>
+        </div>
+
+        <h2>管理者ログイン</h2>
+        <p class="subtitle">管理画面へのアクセスには管理者アカウントが必要です</p>
+
+        <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+        <div th:if="${param.registered}" class="alert-success">登録が完了しました。ログインしてください。</div>
+
+        <form th:action="@{/admin/login}" method="post">
+            <div class="form-group">
+                <label for="email">メールアドレス</label>
+                <input type="email" id="email" name="email"
+                       required placeholder="admin@example.com" autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password"
+                           required placeholder="••••••••">
+                    <button type="button" class="toggle-password"
+                            onclick="togglePassword(this)">👁</button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-auth">ログイン</button>
+        </form>
+
+        <div class="auth-links">
+            <a th:href="@{/admin/register}">管理者アカウントを新規登録</a>
+            &nbsp;｜&nbsp;
+            <a th:href="@{/top}">サイトTOPへ戻る</a>
+        </div>
+    </div>
+
+    <script th:src="@{/js/admin-auth.js}"></script>
+</body>
+</html>

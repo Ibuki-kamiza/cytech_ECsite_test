@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/product.css}">
     <link rel="stylesheet" th:href="@{/css/top.css}">
+    <link rel="stylesheet" th:href="@{/css/slider.css}">
 </head>
 <body>
 
@@ -25,7 +26,7 @@
     </form>
     <div class="user-info">
         <a class="mypage-btn" th:href="@{/mypage}">マイページ</a>
-        <a th:href="@{/admin}" sec:authorize="hasRole('ADMIN')" style="margin-right:8px; font-size:13px;">管理画面</a>
+        <a th:href="@{/admin/login}" sec:authorize="hasRole('ADMIN')" style="margin-right:8px; font-size:13px;">管理画面</a>
         <span sec:authentication="name"></span>
         <form th:action="@{/logout}" method="post" style="display:inline;">
             <button type="submit" class="logout-btn">ログアウト</button>
@@ -35,6 +36,7 @@
 
 <main>
     
+	
     <a th:if="${!#lists.isEmpty(sales)}" th:href="@{/sales}" style="text-decoration:none;">
         <div class="sale-banner">
             <div th:each="sale : ${sales}" class="sale-item">
@@ -45,16 +47,15 @@
         </div>
     </a>
 
-    
     <div class="top-layout">
-
-        
         <aside class="news-sidebar">
             <h3>お知らせ</h3>
             <div th:if="${#lists.isEmpty(news)}" class="news-empty">お知らせはありません</div>
             <div th:each="item : ${news}" class="news-item">
                 <span class="news-date" th:text="${#temporals.format(item.createdAt, 'yyyy/MM/dd')}"></span>
-                <a th:href="@{/announcements/} + ${item.id}" class="news-title-link"><p class="news-title" th:text="${item.title}"></p></a>
+                <a th:href="@{/announcements/} + ${item.id}" class="news-title-link">
+                    <p class="news-title" th:text="${item.title}"></p>
+                </a>
                 <p class="news-content" th:text="${item.content}"></p>
                 <div th:if="${item.imgPath != null}" style="margin-top:6px;">
                     <img th:src="@{/images/} + ${item.imgPath}"
@@ -66,38 +67,111 @@
             </div>
         </aside>
 
-        
+        <!-- 右側メインコンテンツ -->
         <div class="top-right">
-            <section class="top-products">
-                <h2>商品一覧</h2>
-                <div class="product-grid">
-                    <div class="product-card" th:each="product : ${products}"
-                         th:onclick="|location.href='@{/products/}' + ${product.productId}|">
-                        <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
-                             onerror="this.src='https://placehold.co/300x200'">
-                        <div class="product-card-body">
-                            <p class="product-name" th:text="${product.productName}"></p>
-                            <p class="product-price" th:text="'¥' + ${product.price}"></p>
-                            <p class="product-tax" th:text="'税込 ¥' + ${product.taxPrice}"></p>
-                            <div class="star-row">
-                                <span th:each="i : ${#numbers.sequence(1, 5)}"
-                                      th:text="${avgRatings[product.productId] != null and i <= avgRatings[product.productId]} ? '★' : '☆'"
-                                      class="star"></span>
-                                <span th:text="${reviewCounts[product.productId] != null} ? '(' + ${reviewCounts[product.productId]} + '件)' : ''"
-                                      class="review-count"></span>
+
+            <!-- セール商品スライダー>
+            <div th:if="${!#lists.isEmpty(saleProductList)}" class="section-slider">
+                <h3> セール商品</h3>
+                <div class="slider-wrapper">
+                    <button class="slider-btn prev" onclick="slide('sale-track', -1)">&#8249;</button>
+                    <div class="slider-track" id="sale-track">
+                        <div th:each="product : ${saleProductList}" class="product-card"
+                             th:onclick="|location.href='@{/products/}' + ${product.productId}|">
+                            <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
+                                 onerror="this.src='https://placehold.co/300x200'">
+                            <div class="product-card-body">
+                                <p class="product-name" th:text="${product.productName}"></p>
+                                <p class="product-price" th:text="'¥' + ${product.price}"></p>
                             </div>
                         </div>
                     </div>
+                    <button class="slider-btn next" onclick="slide('sale-track', 1)">&#8250;</button>
                 </div>
-            </section>
-
-            
-            <div id="recently-viewed-section" style="display:none; margin-top:48px;">
-                <h3 style="margin-bottom:16px;">最近見た商品</h3>
-                <div id="recently-viewed-grid" class="product-grid"></div>
             </div>
-        </div>
 
+            <!-- おすすめ商品スライダー -->
+            <div class="section-slider">
+                <h3>おすすめ商品</h3>
+                <div class="slider-wrapper">
+                    <button class="slider-btn prev" onclick="slide('recommend-track', -1)">&#8249;</button>
+                    <div class="slider-track" id="recommend-track">
+                        <div th:each="product : ${recommendedProducts}" class="product-card"
+                             th:onclick="|location.href='@{/products/}' + ${product.productId}|">
+                            <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
+                                 onerror="this.src='https://placehold.co/300x200'">
+                            <div class="product-card-body">
+                                <p class="product-name" th:text="${product.productName}"></p>
+                                <p class="product-price" th:text="'¥' + ${product.price}"></p>
+                                <div class="star-row">
+                                    <span th:each="i : ${#numbers.sequence(1, 5)}"
+                                          th:text="${avgRatings[product.productId] != null and i <= avgRatings[product.productId]} ? '★' : '☆'"
+                                          class="star"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="slider-btn next" onclick="slide('recommend-track', 1)">&#8250;</button>
+                </div>
+            </div>
+
+            <!-- もう一度購入スライダー -->
+            <div th:if="${!#lists.isEmpty(recentOrders)}" class="section-slider">
+                <h3>もう一度購入</h3>
+                <div class="slider-wrapper">
+                    <button class="slider-btn prev" onclick="slide('order-track', -1)">&#8249;</button>
+                    <div class="slider-track" id="order-track">
+                        <div th:each="order : ${recentOrders}" class="order-card">
+                            <p class="order-card-date"
+                               th:text="${#temporals.format(order.createdAt, 'yyyy/MM/dd')}"></p>
+                            <p class="order-card-name" th:text="${order.name}"></p>
+                            <p class="order-card-price" th:text="'¥' + ${order.totalPrice}"></p>
+                            <a th:href="@{/order}" class="btn btn-primary btn-sm">再注文</a>
+                        </div>
+                    </div>
+                    <button class="slider-btn next" onclick="slide('order-track', 1)">&#8250;</button>
+                </div>
+            </div>
+
+            <!-- 閲覧履歴スライダー -->
+            <div id="recently-viewed-section" style="display:none;" class="section-slider">
+                <h3>👀 最近見た商品</h3>
+                <div class="slider-wrapper">
+                    <button class="slider-btn prev" onclick="slide('recent-track', -1)">&#8249;</button>
+                    <div class="slider-track" id="recent-track"></div>
+                    <button class="slider-btn next" onclick="slide('recent-track', 1)">&#8250;</button>
+                </div>
+            </div>
+
+            <!-- 全商品一覧スライダー -->
+            <div class="section-slider">
+                <h3>🛒 商品一覧</h3>
+                <div class="slider-wrapper">
+                    <button class="slider-btn prev" onclick="slide('all-track', -1)">&#8249;</button>
+                    <div class="slider-track" id="all-track">
+                        <div th:each="product : ${products}" class="product-card"
+                             th:onclick="|location.href='@{/products/}' + ${product.productId}|">
+                            <img th:src="@{/images/} + ${product.imgPath}" alt="商品画像"
+                                 onerror="this.src='https://placehold.co/300x200'">
+                            <div class="product-card-body">
+                                <p class="product-name" th:text="${product.productName}"></p>
+                                <p class="product-price" th:text="'¥' + ${product.price}"></p>
+                                <p class="product-tax" th:text="'税込 ¥' + ${product.taxPrice}"></p>
+                                <div class="star-row">
+                                    <span th:each="i : ${#numbers.sequence(1, 5)}"
+                                          th:text="${avgRatings[product.productId] != null and i <= avgRatings[product.productId]} ? '★' : '☆'"
+                                          class="star"></span>
+                                    <span th:text="${reviewCounts[product.productId] != null} ? '(' + ${reviewCounts[product.productId]} + '件)' : ''"
+                                          class="review-count"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="slider-btn next" onclick="slide('all-track', 1)">&#8250;</button>
+                </div>
+            </div>
+
+        </div>
     </div>
 </main>
 
@@ -109,5 +183,11 @@
 </footer>
 
 <script th:src="@{/js/recently-viewed.js}"></script>
+<script>
+function slide(trackId, direction) {
+    const track = document.getElementById(trackId);
+    track.scrollLeft += direction * 180;
+}
+</script>
 </body>
 </html>

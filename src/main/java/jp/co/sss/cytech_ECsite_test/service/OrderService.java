@@ -1,10 +1,8 @@
 package jp.co.sss.cytech_ECsite_test.service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.sss.cytech_ECsite_test.entity.Order;
 import jp.co.sss.cytech_ECsite_test.repository.OrderRepository;
 
@@ -19,7 +17,7 @@ public class OrderService {
     }
 
     public List<Order> findByUserId(Integer userId) {
-        return orderRepository.findByUserId(userId);
+        return orderRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }
 
     public Order findById(Integer id) {

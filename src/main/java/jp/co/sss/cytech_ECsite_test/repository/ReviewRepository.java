@@ -16,4 +16,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     @Query("SELECT COUNT(r) FROM Review r WHERE r.productId = :productId")
     Integer countByProductId(@Param("productId") Integer productId);
+
+    @Query("SELECT r.productId, AVG(r.rating) as avg FROM Review r GROUP BY r.productId HAVING COUNT(r) >= 1 ORDER BY avg DESC")
+    List<Object[]> findTopRatedProductIds();
 }

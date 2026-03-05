@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>管理者登録 - Cytech EC</title>
+    <link rel="stylesheet" th:href="@{/css/admin-auth.css}">
+</head>
+<body class="admin-auth">
+    <div class="admin-auth-box">
+
+        <div class="admin-auth-logo">
+            <span>Cytech EC.</span>
+        </div>
+
+        <h2>管理者アカウント登録</h2>
+        <p class="subtitle">登録には管理者秘密キーが必要です</p>
+
+        <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+
+        <form id="register-form" th:action="@{/admin/register}" method="post">
+            <div class="form-group">
+                <label for="userName">お名前</label>
+                <input type="text" id="userName" name="userName"
+                       required placeholder="管理者 太郎">
+            </div>
+
+            <div class="form-group">
+                <label for="email">メールアドレス</label>
+                <input type="email" id="email" name="email"
+                       required placeholder="admin@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="password">パスワード（6文字以上）</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password"
+                           required placeholder="••••••••" minlength="6">
+                    <button type="button" class="toggle-password"
+                            onclick="togglePassword(this)">👁</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="secretKey">管理者秘密キー</label>
+                <div class="password-wrapper">
+                    <input type="password" id="secretKey" name="secretKey"
+                           required placeholder="秘密キーを入力">
+                    <button type="button" class="toggle-password"
+                            onclick="togglePassword(this)">👁</button>
+                </div>
+                <p class="secret-note">※ 管理者秘密キーはシステム管理者のみが知ることができます</p>
+            </div>
+
+            <button type="submit" class="btn-auth">登録する</button>
+        </form>
+
+        <div class="auth-links">
+            <a th:href="@{/admin/login}">← ログインに戻る</a>
+        </div>
+    </div>
+
+    <script th:src="@{/js/admin-auth.js}"></script>
+</body>
+</html>
